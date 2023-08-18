@@ -20,21 +20,6 @@ MOD = emltrees
 # Source files (.c or .py)
 SRC = trees.c trees.py
 
-# Stuff to make soft-float work
-SOFTFP_O := _arm_cmpsf2.o lesf2.o _arm_fixsfsi.o fixsfsi.o eqsf2.o gesf2.o
-SOFTFP_ENABLE := 0
-ifeq ($(ARCH), armv6m)
-	SOFTFP_ENABLE=1
-endif
-ifeq ($(ARCH), armv7m)
-	SOFTFP_ENABLE=1
-endif
-
-ifeq ($(SOFTFP_ENABLE), 1)
-	SRC_O += $(SOFTFP_O)
-	CLEAN_EXTRA += $(SOFTFP_O)
-endif
-
 # Releases
 DIST_FILE = $(DIST_DIR)/$(MOD).mpy
 $(DIST_DIR):
