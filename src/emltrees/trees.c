@@ -91,7 +91,7 @@ STATIC mp_obj_t builder_addnode(size_t n_args, const mp_obj_t *args) {
     const int16_t left = mp_obj_get_int(args[1]);
     const int16_t right = mp_obj_get_int(args[2]);
     const int8_t feature = mp_obj_get_int(args[3]);
-    const float value = mp_obj_get_float_to_f(args[4]);
+    const int16_t value = mp_obj_get_int(args[4]);
 
     if (self->trees.n_nodes >= self->max_nodes) {
         mp_raise_ValueError(MP_ERROR_TEXT("max nodes"));
@@ -127,7 +127,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(builder_addroot_obj, 2, 2, builder_ad
 
 
 
-// Takes a float array
+// Takes a array of input data
 STATIC mp_obj_t predict(mp_obj_fun_bc_t *self_obj, size_t n_args, size_t n_kw, mp_obj_t *args) {
     // Check number of arguments is valid
     mp_arg_check_num(n_args, n_kw, 2, 2, false);
@@ -138,11 +138,11 @@ STATIC mp_obj_t predict(mp_obj_fun_bc_t *self_obj, size_t n_args, size_t n_kw, m
     // Extract buffer pointer and verify typecode
     mp_buffer_info_t bufinfo;
     mp_get_buffer_raise(args[1], &bufinfo, MP_BUFFER_RW);
-    if (bufinfo.typecode != 'f') {
-        mp_raise_ValueError(MP_ERROR_TEXT("expecting float array"));
+    if (bufinfo.typecode != 'h') {
+        mp_raise_ValueError(MP_ERROR_TEXT("expecting int16 (h) array"));
     }
 
-    float *features = bufinfo.buf;
+    const int16_t *features = bufinfo.buf;
     const int n_features = bufinfo.len / sizeof(*features);
 
     // call model
