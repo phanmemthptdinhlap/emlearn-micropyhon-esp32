@@ -9,32 +9,12 @@ import m2c_digits
 import emltrees
 
 
-def load_model(builder, f):
-
-    for line in f:
-        line = line.rstrip('\r')
-        line = line.rstrip('\n')
-        tok = line.split(',')
-        kind = tok[0]
-        if kind == 'r':
-            root = int(tok[1])
-            emltrees.addroot(builder, root)
-        elif kind == 'n':
-            feature = int(tok[1])
-            value = float(tok[2])
-            left = int(tok[3])
-            right = int(tok[4])
-            emltrees.addnode(builder, left, right, feature, value)
-        else:        
-            # unknown value
-            pass
-
 def emlearn_create():
-    model = emltrees.open(7, 150)
+    model = emltrees.new(7, 150)
 
     # Load a CSV file with the model
     with open('eml_digits.csv', 'r') as f:
-        load_model(model, f)
+        emltrees.load_model(model, f)
     return model
 
 def argmax(l):
@@ -61,8 +41,7 @@ model = emlearn_create()
 def emlearn_run(data):
     errors = 0
     for idx, x in enumerate(data):
-        f = array.array('f', x) # NOTE: this takes as long as predict
-        out = emltrees.predict(model, f)
+        out = model.predict(x)
         if (idx != out):
             errors += 1
     return errors
